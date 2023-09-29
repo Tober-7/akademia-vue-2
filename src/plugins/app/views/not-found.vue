@@ -1,6 +1,10 @@
 <template>
-    <div style="padding: 24px;">
-        <span class="text text-title">Not Found</span>
+    <div class="container-right">
+        <div class="header">
+            <span class="text title">Not Found</span>
+        </div>
+        <div class="container-items">
+        </div>
     </div>
 </template>
 
