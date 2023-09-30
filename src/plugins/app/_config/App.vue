@@ -5,8 +5,17 @@
         <span class="text title">Shopping List</span>
       </div>
       <div class="container-sidebar-options">
-        <div class="sidebar-options" v-for="item in lists" :key="`item-${item.id}`">
-          <span class="text"> {{ item.title }}</span>
+        <a href="">
+          <button class="sidebar-option" :disabled="true">
+            <span class="text button">Lists</span>
+          </button>
+        </a>
+        <div v-for="item in lists" :key="`item-${item.id}`">
+          <a href="`/lists/${item.id}`" @click.prevent="openShoppingListDetail(item)">
+            <button class="sidebar-option" :disabled="true">
+              <span class="text button"> {{ item.title }}</span>
+            </button>
+          </a>
         </div>
       </div>
     </div>
@@ -22,6 +31,12 @@ export default {
     return {
       lists: null,
     }
+  },
+
+  methods: {
+    openShoppingListDetail({ id }) {
+			this.$router.push({ name: 'Shopping List - Detail', params: { id } })
+		}
   },
 
   async mounted() {
@@ -112,7 +127,7 @@ header, body{
   justify-content: left;
   flex-grow: 1;
 
-  padding: 0 12px;
+  padding: 6px 12px;
 
   background-color: #181818;
 }
@@ -125,13 +140,124 @@ header, body{
   margin: 24px 0 0 0;
 }
 
-.sidebar-options{
+.sidebar-option{
   cursor: pointer;
+  pointer-events: none;
 
   display: flex;
 
+  width: 100%;
+
   padding: 12px;
   margin: 6px 0;
+
+  background-color: rgba(53, 151, 255, 0.1);
+
+  border-radius: 5px;
+  border: none;
+}
+
+.sidebar-option:disabled{
+  background-color: transparent;
+}
+
+.container-overlay{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: fixed;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba(0, 0, 0, 0.5);
+  border: none;
+}
+
+.container-overlay:disabled{
+  display: none;
+}
+
+.overlay{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  width: 250px;
+  height: 150px;
+
+  padding: 24px;
+
+  border-radius: 15px;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.overlay-options{
+  display: flex;
+  justify-content: space-between;
+}
+
+.input{
+  background-color: transparent;
+  border: none;
+  border-bottom: solid 1px #808080;
+}
+
+.input:hover{
+  border-bottom: solid 1px #3597FF;
+}
+
+.input:focus{
+  outline: none;
+  border-bottom: solid 1px #808080;
+}
+
+.input::placeholder{
+  opacity: 0.5;
+}
+
+.input-checkbox{
+  appearance: none;
+
+  width: 20px;
+  height: 20px;
+
+  margin: 0 12px 0 0;
+
+  border-radius: 2px;
+  border: solid 1px #808080;
+}
+
+.input-checkbox:hover{
+  border: solid 1px #3597FF;
+}
+
+.input-check{
+  pointer-events: none;
+
+  position: absolute;
+
+  width: 0px;
+  height: 0px;
+
+  border-radius: 2px;
+  background-color: #808080;
+
+  transform: translate(5px, 0.5px);
+}
+
+.input-checkbox:hover ~ .input-check{
+  background-color: #3597FF;
+}
+
+.input-checkbox:checked ~ .input-check{
+  width: 10px;
+  height: 10px;
+}
+
+a{
+  color: transparent;
 }
 
 .text{
@@ -141,8 +267,16 @@ header, body{
   color: #FFFFFF;
   letter-spacing: 1px;
 
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+
   &.blue{
     color: #3597FF;
+  }
+  &.red{
+    color: #FF0000;
   }
   &.dark{
     color: #808080;
@@ -156,6 +290,12 @@ header, body{
   &.center{
     text-align: center;
   }
+}
+
+.text:disabled{
+  cursor: default;
+  
+  opacity: 0.5;
 }
 
 .lists{
@@ -188,5 +328,22 @@ header, body{
   align-items: start;
 
   padding: 6px 0;
+}
+
+.list-detail-item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 12px;
+  margin: 6px 0;
+
+  border-radius: 5px;
+  background-color: #1f1f1f;
+}
+
+.list-detail-item > div{
+  display: flex;
+  align-items: center;
 }
 </style>
