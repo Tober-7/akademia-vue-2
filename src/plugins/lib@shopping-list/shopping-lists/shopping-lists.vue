@@ -1,41 +1,45 @@
 <template>
-  <button class="container-overlay" :disabled="!overlay">
+  <div class="container-overlay" :class="{disabled: !overlay}">
     <div class="overlay">
       <span class="text title">Name</span>
-      <input class="input text" type="text" placeholder="Dinner" v-model="addInput" @keyup.enter="addList(false, true)">
+      <input class="input text" type="text" placeholder="Dinner" spellcheck="false" v-model="addInput" @keyup.enter="addList(false, true)">
       <div class="overlay-options">
         <span class="text blue button" @click="addList(false, false)">Cancel</span>
-        <button class="text blue button" :disabled="!canAdd" @click="addList(false, true)">Create</button>
+        <span class="text blue button" :class="{disabled: !canAdd}" @click="addList(false, true)">Create</span>
       </div>
     </div>
-  </button>
+  </div>
   <div class="container-right">
       <template v-if="!lists">
-        <span class="text title dark center">Loading</span>
+        <div class="header"></div>
+        <div class="container-loading">
+          <span class="text title dark center">Loading</span>
+        </div>
       </template>
       
       <template v-else-if="lists.error">
-        <span class="text title dark">Error:</span> {{ lists.error }}
+        <div class="header"></div>
+        <div class="container-loading">
+          <span class="text title dark">Error:</span> {{ lists.error }}
+        </div>
       </template>
       
       <template v-else>
         <div class="header">
           <span class="text title">My Lists</span>
-          <!--
-            <span class="text blue button" @click="addList(true, false)">Add</span>
-          -->
+          <span class="text blue button" @click="addList(true, false)">Add</span>
         </div>
         <div class="container-items">
-          <div v-for="item in lists" :key="`item-${item.id}`"> 
-            <a href="`/lists/${item.id}`" @click.prevent="openShoppingListDetail(item)">
+          <div v-for="list in lists" :key="`list-${list.id}`"> 
+            <a href="`/lists/${list.id}`" @click.prevent="openListDetail(list)">
               <div class="list">
-                <span class="text title button">{{ item.title }}</span>
-                <div class="list-items" v-if="item.items.length < 1">
+                <span class="text title button">{{ list.title }}</span>
+                <div class="list-items" v-if="list.items.length < 1">
                   <span class="text dark button">No Items</span>
                 </div>
-                <div class="list-items" v-for="item in item.items" :key="`item-${item.id}`">
+                <div class="list-items" v-for="item in list.items" :key="`item-${item.id}`">
                   <div class="list-item">
-                    <span class="text button">{{ item.name }}</span>
+                    <span class="text button" :class="{crossed: isChecked(list, item)}">{{ item.name }}</span>
                     <span class="text button">{{ item.value + " " + item.unit }}</span>
                   </div>
                 </div>
@@ -66,39 +70,57 @@ export default {
   },
 
   methods: {
-    addList(overlay, add) {
-      if (!add) this.overlay = overlay;
+    async update() {
+      try {
+        // const response = await axios.get('https://shoppinglist.wezeo.dev/shoppinglist/lists')
+        // const data = response.data.data
 
-      if (add && this.addInput != ""){
-        this.lists.unshift({
-          id: this.lists[this.lists.length - 1].id - 1, 
-          title: this.addInput, 
-          icon: null, 
-          items: []
-        })
-
-        this.overlay = overlay
+        const { data: { data: shoppingLists} } = await axios.get('/api/v1/shopping-lists')
+        this.lists = shoppingLists
+      } catch (error) {
+        console.error('Error:', error)
+        this.lists = { error }
       }
-
-      this.addInput = "";
     },
-    openShoppingListDetail({ id }) {
-			this.$router.push({ name: 'Shopping List - Detail', params: { id } })
-		}
+
+    async addList(overlay, add) {
+      try {
+        if (!add) this.overlay = overlay;
+  
+        if (add && this.addInput != ""){
+          await axios.post('/api/v1/shopping-lists', 
+          {
+            id: this.lists.length != 0 ? this.lists[0].id + 1 : 0, 
+            title: this.addInput, 
+            icon: null, 
+            items: []
+          })       
+
+          this.overlay = overlay
+        }
+  
+        this.addInput = "";
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    },
+    
+    isChecked({ id: listId }, { id: itemId }) {
+      return this.lists.find(({ id }) => id == listId).items.find((item) => item.id == itemId).is_checked ? true : false;
+		},
+
+    openListDetail({ id }) {
+      this.$router.push({ name: 'Shopping List - Detail', params: { id } })
+    },
   },
 
   async mounted() {
-		try {
-			// const response = await axios.get('https://shoppinglist.wezeo.dev/shoppinglist/lists')
-			// const data = response.data.data
+		this.update()
+	},
 
-			const { data: { data: shoppingLists} } = await axios.get('/api/v1/shopping-lists')
-			this.lists = shoppingLists
-		} catch (error) {
-			console.error('Error:', error)
-			this.lists = { error }
-		}
-	}
+  async updated() {
+		this.update()
+	},
 }
 </script>
 
