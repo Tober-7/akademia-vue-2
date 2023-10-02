@@ -170,7 +170,7 @@ header, body{
 
   margin: 16px 0;
 
-  border-top: solid 1px #FFFFFF;
+  border-top: solid 1px #808080;
 }
 
 .sidebar-option{
@@ -236,6 +236,12 @@ header, body{
   align-items: start;
 
   padding: 6px 0;
+}
+
+.list-item-separator{
+  height: 0;
+
+  margin: 12px 0;
 }
 
 .list-detail-item{
@@ -354,6 +360,9 @@ header, body{
 
   &.title{
     font-size: 20px;
+  }
+  &.small{
+    font-size: 12px;
   }
   &.crossed{
     color: #808080;

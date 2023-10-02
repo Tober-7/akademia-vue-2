@@ -37,10 +37,33 @@
                 <div class="list-items" v-if="list.items.length < 1">
                   <span class="text dark button">No Items</span>
                 </div>
-                <div class="list-items" v-for="item in list.items" :key="`item-${item.id}`">
-                  <div class="list-item">
-                    <span class="text button" :class="{crossed: isChecked(list, item)}">{{ item.name }}</span>
-                    <span class="text button">{{ item.value + " " + item.unit }}</span>
+                <div v-if="list.items.length < 3">
+                  <div class="list-items" v-for="item in list.items" :key="`item-${item.id}`">
+                    <div class="list-item">
+                      <span class="text button" :class="{crossed: isChecked(list, item)}">{{ item.name }}</span>
+                      <span class="text button">{{ item.value + " " + item.unit }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div v-else>
+                  <div class="list-items">
+                    <div class="list-item">
+                      <span class="text button" :class="{crossed: isChecked(list, list.items[0])}">{{ list.items[0].name }}</span>
+                      <span class="text button">{{ list.items[0].value + " " + list.items[0].unit }}</span>
+                    </div>
+                    <div class="list-item">
+                      <span class="text button" :class="{crossed: isChecked(list, list.items[1])}">{{ list.items[1].name }}</span>
+                      <span class="text button">{{ list.items[1].value + " " + list.items[1].unit }}</span>
+                    </div>
+                    <div class="list-item">
+                      <span class="text button" :class="{crossed: isChecked(list, list.items[2])}">{{ list.items[2].name }}</span>
+                      <span class="text button">{{ list.items[2].value + " " + list.items[2].unit }}</span>
+                    </div>
+                    <div class="list-item-separator"></div>
+                    <div class="list-item">
+                      <span class="text small dark button">And {{ list.items.length - 3 }} others...</span>
+                      <span class="text small dark button">{{ list.items.length }} items in total</span>
+                    </div>
                   </div>
                 </div>
               </div>
