@@ -54,7 +54,10 @@
 						</div>
 						<span class="text title">{{ item.name }}</span>
 					</div>
-					<span class="text blue button" @click="changeItemValues(true, false, item)">{{ item.value + " " + item.unit }}</span>
+					<div>
+						<span class="text blue button" @click="changeItemValues(true, false, item)">{{ item.value + " " + item.unit }}</span>
+						<span class="text red button" style="margin-left: 16px;" @click="deleteListItem(item)">Remove</span>
+					</div>
 				</div>
 				<div class="list-detail-item">
 					<input class="input text" type="text" placeholder="Ingredients..." spellcheck="false" v-model="addItemInput" @keyup.enter="addItem">
@@ -70,14 +73,19 @@ import axios from 'axios'
 export default {
 	data() {
     return {
-        list: null,
-				addItemInput: "",
-				quantityInput: "",
-				unitInput: "",
-				tempItem: null,
-        overlay: false,
-				overlayDelete: false,
-				overlayValues: false,
+			list: null,
+
+			canInteract: true,
+
+			addItemInput: "",
+			quantityInput: "",
+			unitInput: "",
+
+			tempItem: null,
+	
+			overlay: false,
+			overlayDelete: false,
+			overlayValues: false,
     }
 	},
 
@@ -111,6 +119,10 @@ export default {
 		},
 
 		async addItem() {
+			if (!this.canInteract) return;
+
+			this.canInteract = false;
+
 			try {
 				if (this.addItemInput == "") return;
 				
@@ -128,18 +140,44 @@ export default {
 			} catch (error) {
 				console.error('Error:', error);
 			}
+
+			this.canInteract = true
 		},
 
 		async deleteList(overlay, del) {
-			if (overlay){
-				this.overlayDelete = overlay;
-				this.overlayValues = !overlay;
+			if (!this.canInteract) return;
+
+			try {
+				if (overlay){
+					this.overlayDelete = overlay;
+					this.overlayValues = !overlay;
+				}
+				this.overlay = overlay
+	
+				if (!del) return;
+
+				this.canInteract = false;
+	
+				await axios.delete(`/api/v1/shopping-lists/${this.$route.params.id}`)
+			} catch (error) {
+				console.error('Error:', error)
 			}
-			this.overlay = overlay
 
-			if (!del) return;
+			this.canInteract = true;
+		},
 
-			await axios.delete(`/api/v1/shopping-lists/${this.$route.params.id}`)
+		async deleteListItem({ id: itemId }) {
+			if (!this.canInteract) return;
+
+			this.canInteract = false;
+
+			try {
+				await axios.delete(`/api/v1/shopping-lists/${this.$route.params.id}/items/${itemId}`)
+			} catch (error) {
+				console.error('Error:', error)
+			}
+
+			this.canInteract = true;
 		},
 
 		async changeItemValues(overlay, change, item) {
