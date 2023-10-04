@@ -1,11 +1,11 @@
 <template>
-  <div class="container-overlay" :class="{disabled: !overlay}">
+  <div class="container-overlay" :class="{disabled: overlay != 'on'}">
     <div class="overlay">
       <span class="text title">Name</span>
-      <input class="input text" type="text" placeholder="Dinner" spellcheck="false" v-model="addInput" @keyup.enter="addList(false, true)">
+      <input class="input text" type="text" placeholder="Dinner" spellcheck="false" v-model="addInput" @keyup.enter="addList('off', true)">
       <div class="overlay-options">
-        <span class="text blue button" @click="addList(false, false)">Cancel</span>
-        <span class="text blue button" :class="{disabled: !canAdd}" @click="addList(false, true)">Create</span>
+        <span class="text blue button" @click="addList('off', false)">Cancel</span>
+        <span class="text blue button" :class="{disabled: !canAdd}" @click="addList('off', true)">Create</span>
       </div>
     </div>
   </div>
@@ -27,7 +27,7 @@
       <template v-else>
         <div class="header">
           <span class="text title">My Lists</span>
-          <span class="text blue button" @click="addList(true, false)">Add</span>
+          <span class="text blue button" @click="addList('on', false)">Add</span>
         </div>
         <div class="container-items">
           <div v-for="list in lists" :key="`list-${list.id}`"> 
@@ -59,7 +59,7 @@
                       <span class="text button" :class="{crossed: isChecked(list, list.items[2])}">{{ list.items[2].name }}</span>
                       <span class="text button">{{ list.items[2].value + " " + list.items[2].unit }}</span>
                     </div>
-                    <div class="list-item-separator"></div>
+                    <hr>
                     <div class="list-item">
                       <span class="text small dark button">And {{ list.items.length - 3 }} others...</span>
                       <span class="text small dark button">{{ list.items.length }} items in total</span>
@@ -81,8 +81,12 @@ export default {
   data() {
     return {
       lists: null,
+
+      canInteract: true,
+
       addInput: "",
-      overlay: false,
+
+      overlay: 'off',
     }
   },
 
@@ -107,10 +111,14 @@ export default {
     },
 
     async addList(overlay, add) {
+      if (!this.canInteract) return;
+
       try {
         if (!add) this.overlay = overlay;
   
-        if (add && this.addInput != ""){
+        if (add && this.canAdd){
+          this.canInteract = false;
+
           await axios.post('/api/v1/shopping-lists', 
           {
             id: this.lists.length != 0 ? this.lists[0].id + 1 : 0, 
@@ -123,6 +131,8 @@ export default {
         }
   
         this.addInput = "";
+
+        this.canInteract = true;
       } catch (error) {
         console.error('Error:', error);
       }
@@ -147,6 +157,45 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+/*#region Lists*/
+
+.lists{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.list{
+  display: flex;
+  flex-direction: column;
+
+  padding: 20px;
+  margin: 6px 0;
+
+  background-color: #1F1F1F;
+  border-radius: 10px;
+}
+
+.list:hover{
+  background-color: #363636;
+}
+
+.list-items{
+  display: flex;
+  flex-direction: column;
+
+  margin: 12px 0 0 0;
+}
+
+.list-item{
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+
+  padding: 6px 0;
+}
+
+/*#endregion*/
 
 </style>

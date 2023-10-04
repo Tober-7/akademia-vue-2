@@ -62,6 +62,12 @@
 				<div class="list-detail-item">
 					<input class="input text" type="text" placeholder="Ingredients..." spellcheck="false" v-model="addItemInput" @keyup.enter="addItem">
 				</div>
+				<template v-if="!canInteract">
+					<hr>
+					<div class="container-loading">
+						<span class="text title dark center">Loading</span>
+					</div>
+				</template>
 			</div>
 		</template>
 	</div>
@@ -121,10 +127,10 @@ export default {
 		async addItem() {
 			if (!this.canInteract) return;
 
-			this.canInteract = false;
-
 			try {
 				if (this.addItemInput == "") return;
+
+				this.canInteract = false;
 				
 				const itemName = this.addItemInput;
 				this.addItemInput = "";
@@ -224,6 +230,26 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+/*#region List Detail*/
+
+.list-detail-item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 12px;
+  margin: 6px 0;
+
+  border-radius: 5px;
+  background-color: #1F1F1F;
+}
+
+.list-detail-item > div{
+  display: flex;
+  align-items: center;
+}
+
+/*#endregion*/
 
 </style>

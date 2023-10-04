@@ -10,7 +10,7 @@
             <span class="text button">Lists</span>
           </div>
         </a>
-        <div class="sidebar-border"></div>
+        <hr>
         <div v-for="item in lists" :key="`item-${item.id}`">
           <a href="`/lists/${item.id}`" @click.prevent="openShoppingListDetail(item)">
             <div class="sidebar-option" :class="{selected: checkRouter(item)}">
@@ -165,14 +165,6 @@ header, body{
   margin: 24px 0 0 0;
 }
 
-.sidebar-border{
-  width: 100%;
-
-  margin: 16px 0;
-
-  border-top: solid 1px #808080;
-}
-
 .sidebar-option{
   cursor: pointer;
   pointer-events: visible;
@@ -196,69 +188,6 @@ header, body{
   &.selected{
     background-color: #212B36;
   }
-}
-
-/*#endregion*/
-
-/*#region Lists*/
-
-.lists{
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-}
-
-.list{
-  display: flex;
-  flex-direction: column;
-
-  padding: 20px;
-  margin: 6px 0;
-
-  background-color: #1F1F1F;
-  border-radius: 10px;
-}
-
-.list:hover{
-  background-color: #363636;
-}
-
-.list-items{
-  display: flex;
-  flex-direction: column;
-
-  margin: 12px 0 0 0;
-}
-
-.list-item{
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-
-  padding: 6px 0;
-}
-
-.list-item-separator{
-  height: 0;
-
-  margin: 12px 0;
-}
-
-.list-detail-item{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 12px;
-  margin: 6px 0;
-
-  border-radius: 5px;
-  background-color: #1F1F1F;
-}
-
-.list-detail-item > div{
-  display: flex;
-  align-items: center;
 }
 
 /*#endregion*/
@@ -456,6 +385,14 @@ header, body{
 
 a{
   text-decoration: none;
+}
+
+hr{
+  display: flex;
+
+  margin: 8px 4px;
+
+  border: solid 1px rgba(128, 128, 128, 0.1);
 }
 
 /*#endregion*/
