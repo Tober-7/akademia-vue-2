@@ -323,6 +323,49 @@ header, body{
 
 /*#endregion*/
 
+/*#region Dots*/
+
+.dot-container{
+  display: flex;
+}
+
+.dot-loading{
+  height: 7px;
+  width: 7px;
+
+  margin: 0 3px;
+
+  animation: loading 2s infinite;
+  animation-fill-mode: both;
+
+  border-radius: 50%;
+  background: #808080;
+  
+  &:nth-child(2) {
+    animation-delay: .2s;
+    margin-left: 1rem * 1.5;
+  }
+  
+  &:nth-child(3) {
+    animation-delay: .4s;
+    margin-left: 1rem * 3;
+  }
+}
+
+@keyframes loading {
+  0% {
+    opacity: 0;
+  }
+  50%{
+    opacity: 1;
+  }
+  100%{
+    opacity: 0;
+  }
+}
+
+/*#endregion*/
+
 /*#region Input*/
 
 .input{

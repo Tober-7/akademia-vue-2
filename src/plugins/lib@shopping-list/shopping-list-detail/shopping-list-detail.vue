@@ -28,6 +28,11 @@
 			<div class="header"></div>
 			<div class="container-loading">
 				<span class="text title dark center">Loading</span>
+				<div class="dot-container">
+					<span class="dot-loading"></span>
+					<span class="dot-loading"></span>
+					<span class="dot-loading"></span>
+				</div>
 			</div>
 		</template>
 	
@@ -59,15 +64,21 @@
 						<span class="text red button" style="margin-left: 16px;" @click="deleteListItem(item)">Remove</span>
 					</div>
 				</div>
-				<div class="list-detail-item">
-					<input class="input text" type="text" placeholder="Ingredients..." spellcheck="false" v-model="addItemInput" @keyup.enter="addItem">
-				</div>
 				<template v-if="!canInteract">
 					<hr>
 					<div class="container-loading">
 						<span class="text title dark center">Loading</span>
+						<div class="dot-container">
+							<span class="dot-loading"></span>
+							<span class="dot-loading"></span>
+							<span class="dot-loading"></span>
+						</div>
 					</div>
+					<hr>
 				</template>
+				<div class="list-detail-item">
+					<input class="input text" type="text" placeholder="Ingredients..." spellcheck="false" v-model="addItemInput" @keyup.enter="addItem">
+				</div>
 			</div>
 		</template>
 	</div>
